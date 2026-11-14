@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ur" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>آپ کا نتیجہ | لون چیک پاکستان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div class="top"><div class="in"><a class="logo" href="index.html">لون چیک پاکستان<small>قرض کی اہلیت کا مفت اندازہ</small></a><nav><a href="index.html">ہوم</a><a href="privacy.html">پرائیویسی</a></nav></div></div>
+<main>
+<div class="ad">اشتہار</div>
+<div class="card" id="out"><p>نتیجہ تیار ہو رہا ہے...</p></div>
+<div class="ad">اشتہار</div>
+<a class="btn alt" href="index.html" onclick="try{sessionStorage.clear()}catch(e){}">دوبارہ چیک کریں</a>
+<div class="note">یہ صرف ایک اندازہ ہے اور 24٪ سالانہ فرضی مارک اپ پر مبنی ہے۔ اصل شرحِ منافع، شرائط اور حتمی منظوری بینک یا قرض دینے والے ادارے کی ہوتی ہے۔ قرض لینے سے پہلے صرف اسٹیٹ بینک آف پاکستان (SBP) سے لائسنس یافتہ ادارے سے رجوع کریں۔</div>
+</main>
+<footer>© لون چیک پاکستان · یہ سائٹ کوئی بینک یا قرض دینے والا ادارہ نہیں · <a href="privacy.html">پرائیویسی پالیسی</a></footer>
+<script>
+(function(){
+  var d={};try{d=JSON.parse(sessionStorage.getItem('loan')||'{}')}catch(e){}
+  var out=document.getElementById('out');
+  if(!d.amount){out.innerHTML='<p>پہلے سوالات کے جواب دیں۔</p><a class="btn" href="index.html">شروع کریں</a>';return;}
+  var age=+d.age,inc=+d.income,mj=+d.months_job,emi=+d.emi||0,amt=+d.amount,ten=+d.tenure;
+  var rate=0.24;
+  var newEmi=Math.round(amt*(1+rate*ten/12)/ten);
+  var dti=(emi+newEmi)/Math.max(inc,1);
+  var fail=[],warn=[];
+  if(age<21||age>60)fail.push('قرض کے لیے عمر عموماً 21 سے 60 سال کے درمیان ہونی چاہیے۔');
+  if(d.job==='none'||inc<25000)fail.push('کم از کم ماہانہ آمدنی تقریباً 25,000 روپے ہونی چاہیے۔');
+  if(d.history==='default')fail.push('ماضی میں ڈیفالٹ ہونے سے منظوری کے امکانات بہت کم ہو جاتے ہیں۔');
+  if(mj<6&&d.job!=='none')warn.push('موجودہ کام پر کم از کم 6 مہینے ہونا بہتر ہے۔');
+  if(d.history==='late')warn.push('قسطوں میں تاخیر سے کریڈٹ اسکور خراب ہوتا ہے۔');
+  if(dti>0.5)fail.push('آپ کی کل قسطیں آمدنی کے 50٪ سے زیادہ بن رہی ہیں، جو بہت زیادہ ہے۔');
+  else if(dti>0.4)warn.push('قسطیں آمدنی کے 40٪ سے زیادہ ہیں۔ کم رقم یا لمبی مدت آزما کر دیکھیں۔');
+  var cls,title;
+  if(fail.length){cls='no';title='فی الحال اہلیت کم ہے';}
+  else if(warn.length){cls='maybe';title='شاید اہل ہیں — کچھ شرائط کے ساتھ';}
+  else{cls='ok';title='آپ اہل لگتے ہیں ✓';}
+  var maxEmi=Math.max(0,Math.round(inc*0.4-emi));
+  function n(x){return x.toLocaleString('en-US')}
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function li(x){return '<li>'+x+'</li>'}
+  var h='<div class="res '+cls+'">'+title+'</div>';
+  h+='<p>محترم/محترمہ <b>'+esc(d.name||'')+'</b>، آپ کی دی گئی معلومات کے مطابق:</p>';
+  h+='<div class="kv"><span>مطلوبہ قرض</span><b>'+n(amt)+' روپے</b></div>';
+  h+='<div class="kv"><span>مدت</span><b>'+ten+' مہینے</b></div>';
+  h+='<div class="kv"><span>اندازاً ماہانہ قسط</span><b>'+n(newEmi)+' روپے</b></div>';
+  h+='<div class="kv"><span>آپ کے لیے محفوظ قسط (زیادہ سے زیادہ)</span><b>'+n(maxEmi)+' روپے</b></div>';
+  if(fail.length)h+='<h2>مسائل</h2><ul>'+fail.map(li).join('')+'</ul>';
+  if(warn.length)h+='<h2>احتیاط</h2><ul>'+warn.map(li).join('')+'</ul>';
+  if(fail.length||warn.length)h+='<p class="sub">مشورہ: رقم کم کریں، مدت بڑھائیں، یا پرانی قسطیں پہلے ادا کر کے دوبارہ چیک کریں۔</p>';
+  out.innerHTML=h;
+})();
+</script>
+</body></html>
